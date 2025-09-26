@@ -3,17 +3,17 @@ package org.jhonny.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.jhonny.dto.ResponseObject;
-import org.jhonny.models.Schedule;
+import org.jhonny.exception.ScheduleNotFoundException;
+import org.jhonny.models.Schedules;
 import org.jhonny.repository.ScheduleRepository;
-import org.jhonny.utils.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalTime;
 import java.util.Objects;
+import java.util.Set;
 
 @ApplicationScoped
-@Transactional
 public class ScheduleService{
 
     private final Logger LOGGER = LoggerFactory.getLogger(ScheduleService.class);
@@ -24,32 +24,28 @@ public class ScheduleService{
         this.scheduleRepository = scheduleRepository;
     }
 
-    public ResponseObject addSchedule(Schedule schedule) {
+    @Transactional
+    public void addSchedule(Schedules schedule) {
 
         if(Objects.isNull(schedule)) {
-            return new ResponseObject(
-                    "schecule is null",
-                    Status.ERROR_404,
-                    null
-            );
-        }
-        try{
-            scheduleRepository.save(schedule);
-            LOGGER.info("Schedule added successfully");
-
-            return new ResponseObject(
-                    "Schedule added successfully",
-                    Status.SUCCESS,
-                    schedule
-            );
-        }catch(Exception e){
-            LOGGER.error("Error while adding schedule", e);
-            return new ResponseObject(
-                    "Error while adding schedule",
-                    Status.ERROR,
-                    null
-            );
+            LOGGER.error("The schedule is null");
+            throw new ScheduleNotFoundException("The schedule is null");
 
         }
+        scheduleRepository.persist(schedule);
+        LOGGER.info("Schedule added successfully");
+
+
+    }
+    public boolean checkSchedule(Set<Schedules> schedules, LocalTime hour) {
+        for(Schedules schedule : schedules) {
+            if(isItInsideSchedule(hour, schedule)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean isItInsideSchedule(LocalTime hour, Schedules schedule) {
+        return hour.isAfter(schedule.getOpenTime()) && hour.isBefore(schedule.getCloseTime());
     }
 }

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -21,16 +22,16 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Schedule {
+public class Schedules {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalTime start;
-    private LocalTime end;
+    private LocalTime openTime;
+    private LocalTime closeTime;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "schedules")
-    private Set<Game> games;
+    private Set<Games> games = new HashSet<>();
 }

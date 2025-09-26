@@ -1,11 +1,11 @@
 package org.jhonny.repository;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.jhonny.models.Schedules;
+import org.jhonny.models.Buyers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class ScheduleRepository extends EntityRepository<Schedules> {
+public class BuyerRepository extends EntityRepository<Buyers> {
 
 }

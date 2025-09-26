@@ -19,7 +19,7 @@ import org.jhonny.utils.TypePerson;
 @SuperBuilder
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Person {
+public abstract class Persons {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
