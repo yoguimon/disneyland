@@ -2,76 +2,69 @@ package org.jhonny.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.transaction.Transactional;
-import org.jhonny.dto.GameDto;
-import org.jhonny.dto.Response;
-import org.jhonny.models.Employee;
-import org.jhonny.models.Game;
-import org.jhonny.models.Schedule;
+import org.jhonny.dto.GameRequest;
+import org.jhonny.exception.GameNotFoundException;
+import org.jhonny.models.Employees;
+import org.jhonny.models.Games;
+import org.jhonny.models.Schedules;
+import org.jhonny.repository.EmployeeRepository;
 import org.jhonny.repository.GameRepository;
+import org.jhonny.repository.ScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
-@Transactional
 public class GameService{
 
     private final Logger LOGGER = LoggerFactory.getLogger(GameService.class);
+
     private final GameRepository gameRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Inject
-    public GameService(GameRepository gameRepository) {
+    public GameService(GameRepository gameRepository, EmployeeRepository employeeRepository,
+                       ScheduleRepository scheduleRepository) {
+
         this.gameRepository = gameRepository;
+        this.employeeRepository = employeeRepository;
+        this.scheduleRepository = scheduleRepository;
+
     }
 
-    public Response addNewGame(GameDto gameDto) {
+    @Transactional
+    public void addNewGame(GameRequest gameDto) {
         try{
             if(Objects.isNull(gameDto)){
-                new Response("Invalid game data");
+                LOGGER.error("Game not found");
+                throw new GameNotFoundException("Game not found");
             }
 
-            Game game = new Game();
-            game.setName(gameDto.getName());
-            game.setDescription(gameDto.getDescription());
-            game.setPrice(gameDto.getPrice());
+            Games game = new Games();
+            game.setName(gameDto.name());
+            game.setDescription(gameDto.description());
+            game.setPrice(gameDto.price());
 
-            gameDto.getEmployeesIds().forEach(id -> {
-                //id
-                Employee newEmployee = gameRepository.find(Employee.class, id);
-                game.getEmployees().add(newEmployee);
-                newEmployee.getGames().add(game);
-            });
+            Employees newEmployee = employeeRepository.findById(gameDto.employeeId());
+            game.setEmployee(newEmployee);
 
-            gameDto.getSchedulesIds().forEach(id -> {
-               Schedule newSchedule = gameRepository.find(Schedule.class, id);
+            gameDto.schedulesIds().forEach(id -> {
+                Schedules newSchedule = scheduleRepository.findById(id);
                game.getSchedules().add(newSchedule);
                newSchedule.getGames().add(game);
             });
 
-            gameRepository.save(game);
+            gameRepository.persist(game);
 
             LOGGER.info("New Game added{}",  game);
 
-            return new Response("success");
 
         }catch(Exception e){
             LOGGER.error("Error adding New Game",e);
-            return new Response("error");
 
-        }
-    }
-    public List<Game> getGames(){
-        try{
-            return gameRepository.findAll();
-        }catch(Exception e){
-            LOGGER.error("Error finding Games",e);
-            throw new RuntimeException("Error finding Games");
         }
     }
 }

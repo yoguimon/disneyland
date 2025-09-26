@@ -1,6 +1,5 @@
 package org.jhonny.models;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -17,8 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
-public class Buyer extends Person {
+public class Buyers extends Persons {
 
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
-    private List<Ticket> tickets;
+    @OneToMany(mappedBy = "buyer")
+    private List<Tickets> tickets;
 }

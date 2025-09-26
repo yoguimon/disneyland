@@ -1,6 +1,5 @@
 package org.jhonny.models;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,24 +9,24 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Game {
+public class Games {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +36,7 @@ public class Game {
 
     private String description;
 
-    private double price;
+    private BigDecimal price;
 
     @ManyToMany
     @JoinTable(
@@ -45,12 +44,13 @@ public class Game {
             joinColumns = @JoinColumn(name = "game_id"),
             inverseJoinColumns = @JoinColumn(name = "schedule_id")
     )
-    private Set<Schedule> schedules = new HashSet<>();;
+    private Set<Schedules> schedules = new HashSet<>();;
 
-    @ManyToMany(mappedBy = "games")
-    private Set<Employee> employees = new HashSet<>();;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employees employee;
 
     @OneToMany(mappedBy = "game")
-    private List<Ticket> tickets;
+    private List<TicketDetails> tickets;
 
 }

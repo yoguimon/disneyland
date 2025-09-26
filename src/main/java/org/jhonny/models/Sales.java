@@ -6,25 +6,36 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Sales {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
-    private String password;
-    @OneToOne
-    @JoinColumn(name = "employee_id", unique = true)
-    private Employee employee;
+
+    private LocalDate dateOfSale;
+    private double totalSale;
+
+
+    @ManyToOne
+    @JoinColumn(name = "ticketOffice_id", nullable = false)
+    private TicketOffices ticketOffice;
+
+    @OneToMany(mappedBy = "sale")
+    private List<Tickets> tickets = new ArrayList<>();
 }
