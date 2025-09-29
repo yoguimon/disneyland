@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.jhonny.dto.PersonRequest;
+import org.jhonny.dto.PersonResponse;
 import org.jhonny.utils.TypePerson;
 @Data
 @NoArgsConstructor

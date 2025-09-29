@@ -5,84 +5,35 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jhonny.dto.PersonRequest;
 import org.jhonny.dto.PersonResponse;
-import org.jhonny.models.Buyers;
-import org.jhonny.models.Employees;
-import org.jhonny.models.Users;
-import org.jhonny.repository.BuyerRepository;
-import org.jhonny.repository.EmployeeRepository;
-import org.jhonny.repository.UserRepository;
+import org.jhonny.exception.PersonNotFoundException;
+import org.jhonny.factory.PersonFactory;
+import org.jhonny.repository.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 @ApplicationScoped
 public class AdministratorService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AdministratorService.class);
 
-    private final UserRepository userRepository;
-    private final EmployeeRepository employeeRepository;
-    private final BuyerRepository buyerRepository;
+    private final PersonFactory personFactory;
 
     @Inject
-    public AdministratorService(UserRepository userRepository, EmployeeRepository employeeRepository,
-                                BuyerRepository buyerRepository) {
-
-        this.userRepository = userRepository;
-        this.employeeRepository = employeeRepository;
-        this.buyerRepository = buyerRepository;
-
+    public AdministratorService(PersonFactory personFactory) {
+        this.personFactory = personFactory;
     }
-    ///strategy,factory
+
     @Transactional
     public PersonResponse addPerson(PersonRequest person) throws Exception {
+        PersonRepository personRepository = personFactory.getPerson(person.typePerson());
 
-        switch (person.typePerson()) {
-            case EMPLOYEE:
-                Employees employee = Employees.builder()
-                        .ci(person.ci())
-                        .firstName(person.firstName())
-                        .lastName(person.lastName())
-                        .email(person.email())
-                        .type(person.typePerson())
-                        .build();
-                employeeRepository.persist(employee);
-
-                LOGGER.info("Added employee {}",  employee);
-
-                Users user = Users.builder()
-                        .employee(employee)
-                        .username(person.email())
-                        .password(person.lastName())
-                        .build();
-                userRepository.persist(user);
-
-                LOGGER.info("Added user {}",  user);
-
-                return new PersonResponse(
-                        "New employee added successfully",
-                        employee
-                );
-
-            case BUYER:
-                Buyers buyer = Buyers.builder()
-                        .ci(person.ci())
-                        .firstName(person.firstName())
-                        .lastName(person.lastName())
-                        .email(person.email())
-                        .type(person.typePerson())
-                        .build();
-                buyerRepository.persist(buyer);
-
-                LOGGER.info("Added buyer {}",  buyer);
-
-                return new PersonResponse(
-                        "New buyer added successfully",
-                        buyer
-                );
-
-            default:
-                LOGGER.error("Invalid type of person");
-                throw new Exception("Invalid type of person");
+        if(Objects.isNull(personRepository)) {
+            LOGGER.error("No repository found for type {}", person.typePerson());
+            throw new PersonNotFoundException("Person not found");
         }
+
+        return personRepository.addPerson(person);
     }
 }

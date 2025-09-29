@@ -58,16 +58,10 @@ public class SaleService {
         this.saleRepository = saleRepository;
     }
 
-    /// method need to be refactored
     @Transactional
     public TicketResponse sellTicket(TicketRequest requestTicket){
-        Buyers buyer = buyerRepository.findById(requestTicket.buyerId());
+        Buyers buyer = getBuyer(requestTicket.buyerId());
 
-        if(Objects.isNull(buyer)) {
-            LOGGER.error("buyer not found");
-            throw new BuyerNotFoundException("buyer not found");
-
-        }
         TicketOffices ticketOffice = ticketOfficeRepository.findById(requestTicket.ticketOfficeId());
 
         Sales sale = Sales.builder()
@@ -87,12 +81,7 @@ public class SaleService {
         double total = 0;
 
         for(BuyRequest buyRequest : requestTicket.buyRequests()) {
-            Games requestGame = gameRepository.findById(buyRequest.gameId());
-
-            if(Objects.isNull(requestGame)) {
-                LOGGER.error("Game not found");
-                throw new GameNotFoundException("Game not found");
-            }
+            Games requestGame = getGame(buyRequest.gameId());
 
             Set<Schedules> schedules = requestGame.getSchedules();
 
@@ -100,31 +89,25 @@ public class SaleService {
             if(!isAvaliable) {
                 LOGGER.error("The game is not available at this time");
 
-                /// return an especific response
-
-                throw new GameNotAvaliableException("The game is not available at this time");
+                TicketDetails ticketDetail = TicketDetails.builder()
+                        .game(requestGame)
+                        .hour(buyRequest.hour())
+                        .build();
+                return new TicketResponse(
+                        "For this schedule is not available the game",
+                        List.of(ticketDetail)
+                );
 
             }
 
-            int amount = buyRequest.amount();
-            total += amount*(requestGame.getPrice().toBigInteger().doubleValue());
+            int numberOfTicketsForAGame = buyRequest.amount();
+            total += numberOfTicketsForAGame*(requestGame.getPrice().toBigInteger().doubleValue());
 
-            while(amount>0){
+            while(numberOfTicketsForAGame>0){
 
-                String ticketCode = UUID.randomUUID().toString();
-                LOGGER.info("ticket code generated");
+                generateTicket(buyRequest, requestGame, ticket, ticketDetails);
+                numberOfTicketsForAGame--;
 
-                TicketDetails ticketDetail = TicketDetails.builder()
-                        .code(ticketCode)
-                        .price(requestGame.getPrice())
-                        .dayOfWeek(buyRequest.dayOfWeek())
-                        .dateOfGame(buyRequest.dateOfGame())
-                        .hour(buyRequest.hour())
-                        .game(requestGame)
-                        .ticket(ticket)
-                        .build();
-                ticketDetails.add(ticketDetail);
-                amount--;
             }
         }
         ticketDetailRepository.persist(ticketDetails);
@@ -136,5 +119,41 @@ public class SaleService {
                 "Ticket has been sold",
                 ticketDetails
         );
+    }
+
+    private void generateTicket(BuyRequest buyRequest, Games requestGame, Tickets ticket, List<TicketDetails> ticketDetails) {
+        String ticketCode = UUID.randomUUID().toString();
+        LOGGER.info("ticket code generated");
+
+        TicketDetails ticketDetail = TicketDetails.builder()
+                .code(ticketCode)
+                .price(requestGame.getPrice())
+                .dayOfWeek(buyRequest.dayOfWeek())
+                .dateOfGame(buyRequest.dateOfGame())
+                .hour(buyRequest.hour())
+                .game(requestGame)
+                .ticket(ticket)
+                .build();
+        ticketDetails.add(ticketDetail);
+    }
+
+    private Games getGame(Long id){
+        Games requestGame = gameRepository.findById(id);
+
+        if(Objects.isNull(requestGame)) {
+            LOGGER.error("Game not found");
+            throw new GameNotFoundException("Game not found");
+        }
+        return requestGame;
+    }
+    private Buyers getBuyer(Long id){
+        Buyers buyer = buyerRepository.findById(id);
+
+        if(Objects.isNull(buyer)) {
+            LOGGER.error("buyer not found");
+            throw new BuyerNotFoundException("buyer not found");
+
+        }
+        return buyer;
     }
 }
