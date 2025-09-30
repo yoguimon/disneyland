@@ -1,5 +1,6 @@
 package org.jhonny.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.inject.Named;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -13,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 import org.jhonny.dto.PersonRequest;
 import org.jhonny.dto.PersonResponse;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -25,7 +27,7 @@ import java.util.Set;
 public class Employees extends Persons {
 
     @OneToMany(mappedBy = "employee")
-    private Set<Games> games;
+    private Set<Games> games = new HashSet<>();
 
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
     private Users user;

@@ -1,6 +1,7 @@
 package org.jhonny.controller;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
@@ -10,6 +11,7 @@ import org.jhonny.service.ScheduleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 
 @Path("/api/v1/schedules")
@@ -41,5 +43,9 @@ public class ScheduleResource {
                     .entity(e.getMessage())
                     .build();
         }
+    }
+    @GET
+    public List<Schedules> getAllSchedules(){
+        return scheduleService.getAll();
     }
 }

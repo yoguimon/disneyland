@@ -1,5 +1,6 @@
 package org.jhonny.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,16 +41,17 @@ public class Games {
 
     @ManyToMany
     @JoinTable(
-            name = "Game_Schedule",
-            joinColumns = @JoinColumn(name = "game_id"),
-            inverseJoinColumns = @JoinColumn(name = "schedule_id")
+            name = "GameSchedule",
+            joinColumns = @JoinColumn(name = "gameId"),
+            inverseJoinColumns = @JoinColumn(name = "scheduleId")
     )
     private Set<Schedules> schedules = new HashSet<>();;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "employeeId")
     private Employees employee;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "game")
     private List<TicketDetails> tickets;
 

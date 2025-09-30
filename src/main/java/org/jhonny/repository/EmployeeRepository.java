@@ -11,6 +11,8 @@ import org.jhonny.utils.TypePerson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 @ApplicationScoped
 public class EmployeeRepository extends EntityRepository<Employees> implements PersonRepository {
 
@@ -56,6 +58,11 @@ public class EmployeeRepository extends EntityRepository<Employees> implements P
             LOGGER.error("Employee not added successfully");
             throw new EmployeePersistenceException("Employee not added successfully");
         }
+    }
+
+    /// 6
+    public List<Employees> getListOfEmployeesWithHisResponsableGame(){
+        return findAll().stream().toList();
     }
 
     @Override

@@ -24,6 +24,6 @@ public class Users {
     private String username;
     private String password;
     @OneToOne
-    @JoinColumn(name = "employee_id", unique = true)
+    @JoinColumn(name = "employeeId", unique = true)
     private Employees employee;
 }

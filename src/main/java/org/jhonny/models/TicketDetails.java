@@ -1,5 +1,6 @@
 package org.jhonny.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,10 +39,12 @@ public class TicketDetails {
     private LocalTime hour;
 
     @ManyToOne
-    @JoinColumn(name = "game_id")
+    @JoinColumn(name = "gameId")
+    @JsonIgnore
     private Games game;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id")
+    @JoinColumn(name = "ticketId")
+    @JsonIgnore
     private Tickets ticket;
 }

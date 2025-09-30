@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,5 +48,9 @@ public class ScheduleService{
     }
     private boolean isItInsideSchedule(LocalTime hour, Schedules schedule) {
         return hour.isAfter(schedule.getOpenTime()) && hour.isBefore(schedule.getCloseTime());
+    }
+
+    public List<Schedules> getAll(){
+        return scheduleRepository.findAll().stream().toList();
     }
 }

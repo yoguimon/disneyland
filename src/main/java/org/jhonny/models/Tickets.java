@@ -26,13 +26,13 @@ public class Tickets {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "buyer_id")
+    @JoinColumn(name = "buyerId")
     private Buyers buyer;
 
     @OneToMany(mappedBy = "ticket")
     private List<TicketDetails> details = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "sale_id", nullable = false)
+    @JoinColumn(name = "saleId", nullable = false)
     private Sales sale;
 }

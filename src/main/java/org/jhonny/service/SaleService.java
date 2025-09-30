@@ -156,4 +156,8 @@ public class SaleService {
         }
         return buyer;
     }
+
+    public Long getNumberOfTicketsSoldForAllGameIntoASpecificRangeDate(LocalDate startDate, LocalDate endDate){
+        return null;
+    }
 }

@@ -33,7 +33,7 @@ public class Sales {
 
 
     @ManyToOne
-    @JoinColumn(name = "ticketOffice_id", nullable = false)
+    @JoinColumn(name = "ticketOfficeId", nullable = false)
     private TicketOffices ticketOffice;
 
     @OneToMany(mappedBy = "sale")
