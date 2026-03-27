@@ -4,35 +4,33 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Tickets {
+@Table(name = "TicketBoths")
+public class TicketBooth {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "buyerId")
-    private Buyers buyer;
+    private String name;
 
-    @OneToMany(mappedBy = "ticket")
-    private List<TicketDetails> details = new ArrayList<>();
+    @OneToMany(mappedBy = "ticketOffice")
+    private List<Sale> sales = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "saleId", nullable = false)
-    private Sales sale;
 }

@@ -1,17 +1,14 @@
 package org.jhonny.repository;
 
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.jhonny.models.Employees;
-import org.jhonny.models.Sales;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jhonny.models.Sale;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 @ApplicationScoped
-public class SaleRepository extends EntityRepository<Sales> {
+public class SaleRepository implements PanacheRepository<Sale> {
     private String query;
 
     /// 1
@@ -35,7 +32,7 @@ public class SaleRepository extends EntityRepository<Sales> {
     public Long getNumberOfSalesInAllGamesBetweenDatesJPQL(LocalDate startDate, LocalDate endDate) {
         query = """
                 SELECT COUNT(td)
-                FROM TicketDetails td
+                FROM TicketDetail td
                 JOIN td.ticket t
                 JOIN t.sale s
                 WHERE td.dateOfGame BETWEEN :startDate AND :endDate
@@ -71,7 +68,7 @@ public class SaleRepository extends EntityRepository<Sales> {
     public Long getNumberOfSalesIntoASpecificGameAndRangeDateJPQL(Long gameId, LocalDate startDate, LocalDate endDate) {
         query = """
                 SELECT COUNT(td)
-                FROM TicketDetails td
+                FROM TicketDetail td
                 JOIN td.ticket t
                 JOIN t.sale s
                 WHERE td.game.id = :gameId AND td.dateOfGame BETWEEN :startDate AND :endDate
@@ -103,7 +100,7 @@ public class SaleRepository extends EntityRepository<Sales> {
     public BigDecimal getTotalSumOfSalesAmountInASingleDayJPQL(LocalDate date) {
         query = """
                  SELECT SUM(td.price)
-                FROM TicketDetails td
+                FROM TicketDetail td
                 JOIN td.ticket t
                 JOIN t.sale s
                 WHERE td.dateOfGame = :dateOfGame

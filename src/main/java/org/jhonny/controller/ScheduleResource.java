@@ -6,7 +6,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import org.jhonny.exception.ScheduleNotFoundException;
-import org.jhonny.models.Schedules;
+import org.jhonny.models.Schedule;
 import org.jhonny.service.ScheduleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class ScheduleResource {
     }
 
     @POST
-    public Response addSchedule(Schedules schedule) {
+    public Response addSchedule(Schedule schedule) {
 
         try{
 
@@ -45,7 +45,7 @@ public class ScheduleResource {
         }
     }
     @GET
-    public List<Schedules> getAllSchedules(){
+    public List<Schedule> getAllSchedules(){
         return scheduleService.getAll();
     }
 }

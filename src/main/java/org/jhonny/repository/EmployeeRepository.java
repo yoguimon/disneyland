@@ -1,20 +1,21 @@
 package org.jhonny.repository;
 
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.jhonny.dto.PersonRequest;
 import org.jhonny.dto.PersonResponse;
 import org.jhonny.exception.EmployeePersistenceException;
-import org.jhonny.models.Employees;
-import org.jhonny.models.Users;
-import org.jhonny.utils.TypePerson;
+import org.jhonny.models.Employee;
+import org.jhonny.models.User;
+import org.jhonny.utils.PersonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 @ApplicationScoped
-public class EmployeeRepository extends EntityRepository<Employees> implements PersonRepository {
+public class EmployeeRepository implements PanacheRepository<Employee>, PersonRepository {
 
     private final Logger LOGGER = LoggerFactory.getLogger(EmployeeRepository.class);
 
@@ -28,7 +29,7 @@ public class EmployeeRepository extends EntityRepository<Employees> implements P
     @Override
     public PersonResponse addPerson(PersonRequest person) throws Exception {
         try{
-            Employees employee = Employees.builder()
+            Employee employee = Employee.builder()
                     .ci(person.ci())
                     .firstName(person.firstName())
                     .lastName(person.lastName())
@@ -39,7 +40,7 @@ public class EmployeeRepository extends EntityRepository<Employees> implements P
 
             LOGGER.info("Added employee {}",  employee);
 
-            Users user = Users.builder()
+            User user = User.builder()
                     .employee(employee)
                     .username(person.email())
                     .password(person.lastName())
@@ -61,12 +62,12 @@ public class EmployeeRepository extends EntityRepository<Employees> implements P
     }
 
     /// 6
-    public List<Employees> getListOfEmployeesWithHisResponsableGame(){
+    public List<Employee> getListOfEmployeesWithHisResponsableGame(){
         return findAll().stream().toList();
     }
 
     @Override
-    public TypePerson getType() {
-        return TypePerson.EMPLOYEE;
+    public PersonType getType() {
+        return PersonType.EMPLOYEE;
     }
 }

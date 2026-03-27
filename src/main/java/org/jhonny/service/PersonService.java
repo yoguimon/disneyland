@@ -14,14 +14,14 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 
 @ApplicationScoped
-public class AdministratorService {
+public class PersonService {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(AdministratorService.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
 
     private final PersonFactory personFactory;
 
     @Inject
-    public AdministratorService(PersonFactory personFactory) {
+    public PersonService(PersonFactory personFactory) {
         this.personFactory = personFactory;
     }
 

@@ -1,20 +1,19 @@
 package org.jhonny.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.inject.Named;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.jhonny.dto.PersonRequest;
-import org.jhonny.dto.PersonResponse;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -24,11 +23,12 @@ import java.util.Set;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
-public class Employees extends Persons {
+@Table(name = "Employees")
+public class Employee extends Person {
 
     @OneToMany(mappedBy = "employee")
-    private Set<Games> games = new HashSet<>();
+    private List<Game> games = new ArrayList<>();
 
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
-    private Users user;
+    private User user;
 }

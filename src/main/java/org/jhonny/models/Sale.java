@@ -1,50 +1,45 @@
 package org.jhonny.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TicketDetails {
+@Table(name = "Sales")
+public class Sale {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String code;
+    private LocalDate dateOfSale;
+    private double totalSale;
 
-    private BigDecimal price;
-
-    private DayOfWeek dayOfWeek;
-
-    private LocalDate dateOfGame;
-
-    private LocalTime hour;
 
     @ManyToOne
-    @JoinColumn(name = "gameId")
-    @JsonIgnore
-    private Games game;
+    @JoinColumn(name = "ticketOfficeId", nullable = false)
+    private TicketBooth ticketOffice;
 
-    @ManyToOne
-    @JoinColumn(name = "ticketId")
-    @JsonIgnore
-    private Tickets ticket;
+    @OneToMany(mappedBy = "sale")
+    private List<Ticket> tickets = new ArrayList<>();
 }

@@ -1,11 +1,10 @@
 package org.jhonny.repository;
 
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.jhonny.models.Tickets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jhonny.models.Ticket;
 
 @ApplicationScoped
-public class TicketRepository extends EntityRepository<Tickets> {
+public class TicketRepository implements PanacheRepository<Ticket> {
 
 }

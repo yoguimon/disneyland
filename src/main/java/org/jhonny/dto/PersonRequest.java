@@ -1,5 +1,5 @@
 package org.jhonny.dto;
 
-import org.jhonny.utils.TypePerson;
+import org.jhonny.utils.PersonType;
 
-public record PersonRequest(String ci, String firstName, String lastName, String email, TypePerson typePerson) { }
+public record PersonRequest(String ci, String firstName, String lastName, String email, PersonType typePerson) { }

@@ -2,14 +2,14 @@ package org.jhonny.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -27,32 +27,31 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Games {
+@Table(name = "TicketDetails")
+public class TicketDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    private String description;
+    private String code;
 
     private BigDecimal price;
 
-    @ManyToMany
-    @JoinTable(
-            name = "GameSchedule",
-            joinColumns = @JoinColumn(name = "gameId"),
-            inverseJoinColumns = @JoinColumn(name = "scheduleId")
-    )
-    private Set<Schedules> schedules = new HashSet<>();;
+    private LocalDate dateOfGame;
+
+    @Enumerated(EnumType.STRING)
+    private DayOfWeek dayOfWeek;
+
+    private LocalTime hour;
 
     @ManyToOne
-    @JoinColumn(name = "employeeId")
-    private Employees employee;
-
+    @JoinColumn(name = "gameId")
     @JsonIgnore
-    @OneToMany(mappedBy = "game")
-    private List<TicketDetails> tickets;
+    private Game game;
 
+    @ManyToOne
+    @JoinColumn(name = "ticketId")
+    @JsonIgnore
+    private Ticket ticket;
 }

@@ -6,29 +6,24 @@ import jakarta.transaction.Transactional;
 import org.jhonny.dto.BuyRequest;
 import org.jhonny.dto.TicketRequest;
 import org.jhonny.dto.TicketResponse;
-import org.jhonny.exception.BuyerNotFoundException;
-import org.jhonny.exception.GameNotAvaliableException;
-import org.jhonny.exception.GameNotFoundException;
-import org.jhonny.models.Buyers;
-import org.jhonny.models.Games;
-import org.jhonny.models.Sales;
-import org.jhonny.models.Schedules;
-import org.jhonny.models.Tickets;
-import org.jhonny.models.TicketDetails;
-import org.jhonny.models.TicketOffices;
-import org.jhonny.repository.BuyerRepository;
-import org.jhonny.repository.GameRepository;
+import org.jhonny.models.Buyer;
+import org.jhonny.models.Game;
+import org.jhonny.models.Sale;
+import org.jhonny.models.Schedule;
+import org.jhonny.models.Ticket;
+import org.jhonny.models.TicketDetail;
+import org.jhonny.models.TicketBooth;
 import org.jhonny.repository.SaleRepository;
 import org.jhonny.repository.TicketDetailRepository;
-import org.jhonny.repository.TicketOfficeRepository;
+import org.jhonny.repository.TicketBoothRepository;
 import org.jhonny.repository.TicketRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,57 +34,57 @@ public class SaleService {
     private final TicketRepository ticketRepository;
     private final TicketDetailRepository ticketDetailRepository;
     private final ScheduleService scheduleService;
-    private final BuyerRepository buyerRepository;
-    private final GameRepository gameRepository;
-    private final TicketOfficeRepository ticketOfficeRepository;
+    private final TicketBoothRepository ticketOfficeRepository;
     private final SaleRepository saleRepository;
+    private final GameService gameService;
+    private final BuyerService buyerService;
 
     @Inject
     public SaleService(TicketRepository ticketRepository, TicketDetailRepository ticketDetailRepository,
-                         ScheduleService scheduleService, BuyerRepository buyerRepository,
-                         GameRepository gameRepository, TicketOfficeRepository ticketOfficeRepository,
-                         SaleRepository saleRepository) {
+                         ScheduleService scheduleService, TicketBoothRepository ticketOfficeRepository,
+                         SaleRepository saleRepository, GameService gameService,
+                         BuyerService buyerService) {
         this.ticketRepository = ticketRepository;
         this.ticketDetailRepository = ticketDetailRepository;
         this.scheduleService = scheduleService;
-        this.buyerRepository = buyerRepository;
-        this.gameRepository = gameRepository;
         this.ticketOfficeRepository = ticketOfficeRepository;
         this.saleRepository = saleRepository;
+        this.gameService = gameService;
+        this.buyerService = buyerService;
     }
 
     @Transactional
     public TicketResponse sellTicket(TicketRequest requestTicket){
-        Buyers buyer = getBuyer(requestTicket.buyerId());
+        Buyer buyer = buyerService.getBuyer(requestTicket.buyerId());
 
-        TicketOffices ticketOffice = ticketOfficeRepository.findById(requestTicket.ticketOfficeId());
+        TicketBooth ticketOffice = ticketOfficeRepository.findById(requestTicket.ticketOfficeId());
 
-        Sales sale = Sales.builder()
+        Sale sale = Sale.builder()
                 .dateOfSale(LocalDate.now())
                 .ticketOffice(ticketOffice)
                 .build();
         saleRepository.persist(sale);
 
-        Tickets ticket = Tickets.builder()
+        Ticket ticket = Ticket.builder()
                 .buyer(buyer)
                 .sale(sale)
                 .build();
 
         ticketRepository.persist(ticket);
 
-        List<TicketDetails> ticketDetails = new ArrayList<>();
+        List<TicketDetail> ticketDetails = new ArrayList<>();
         double total = 0;
 
         for(BuyRequest buyRequest : requestTicket.buyRequests()) {
-            Games requestGame = getGame(buyRequest.gameId());
+            Game requestGame = gameService.getGame(buyRequest.gameId());
 
-            Set<Schedules> schedules = requestGame.getSchedules();
+            List<Schedule> schedules = requestGame.getSchedules();
 
             boolean isAvaliable = scheduleService.checkSchedule(schedules, buyRequest.hour());
             if(!isAvaliable) {
                 LOGGER.error("The game is not available at this time");
 
-                TicketDetails ticketDetail = TicketDetails.builder()
+                TicketDetail ticketDetail = TicketDetail.builder()
                         .game(requestGame)
                         .hour(buyRequest.hour())
                         .build();
@@ -121,11 +116,11 @@ public class SaleService {
         );
     }
 
-    private void generateTicket(BuyRequest buyRequest, Games requestGame, Tickets ticket, List<TicketDetails> ticketDetails) {
+    private void generateTicket(BuyRequest buyRequest, Game requestGame, Ticket ticket, List<TicketDetail> ticketDetails) {
         String ticketCode = UUID.randomUUID().toString();
         LOGGER.info("ticket code generated");
 
-        TicketDetails ticketDetail = TicketDetails.builder()
+        TicketDetail ticketDetail = TicketDetail.builder()
                 .code(ticketCode)
                 .price(requestGame.getPrice())
                 .dayOfWeek(buyRequest.dayOfWeek())
@@ -135,26 +130,6 @@ public class SaleService {
                 .ticket(ticket)
                 .build();
         ticketDetails.add(ticketDetail);
-    }
-
-    private Games getGame(Long id){
-        Games requestGame = gameRepository.findById(id);
-
-        if(Objects.isNull(requestGame)) {
-            LOGGER.error("Game not found");
-            throw new GameNotFoundException("Game not found");
-        }
-        return requestGame;
-    }
-    private Buyers getBuyer(Long id){
-        Buyers buyer = buyerRepository.findById(id);
-
-        if(Objects.isNull(buyer)) {
-            LOGGER.error("buyer not found");
-            throw new BuyerNotFoundException("buyer not found");
-
-        }
-        return buyer;
     }
 
     public Long getNumberOfTicketsSoldForAllGameIntoASpecificRangeDate(LocalDate startDate, LocalDate endDate){

@@ -1,16 +1,17 @@
 package org.jhonny.repository;
 
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jhonny.dto.PersonRequest;
 import org.jhonny.dto.PersonResponse;
 import org.jhonny.exception.BuyerPersistenceException;
-import org.jhonny.models.Buyers;
-import org.jhonny.utils.TypePerson;
+import org.jhonny.models.Buyer;
+import org.jhonny.utils.PersonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class BuyerRepository extends EntityRepository<Buyers> implements  PersonRepository  {
+public class BuyerRepository implements PanacheRepository<Buyer>, PersonRepository {
 
     private final Logger LOGGER = LoggerFactory.getLogger(BuyerRepository.class);
 
@@ -18,7 +19,7 @@ public class BuyerRepository extends EntityRepository<Buyers> implements  Person
     @Override
     public PersonResponse addPerson(PersonRequest person) throws Exception {
         try{
-            Buyers buyer = Buyers.builder()
+            Buyer buyer = Buyer.builder()
                     .ci(person.ci())
                     .firstName(person.firstName())
                     .lastName(person.lastName())
@@ -40,7 +41,7 @@ public class BuyerRepository extends EntityRepository<Buyers> implements  Person
     }
 
     @Override
-    public TypePerson getType() {
-        return TypePerson.BUYER;
+    public PersonType getType() {
+        return PersonType.BUYER;
     }
 }

@@ -7,30 +7,29 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import org.jhonny.dto.PersonRequest;
 import org.jhonny.dto.PersonResponse;
-import org.jhonny.service.AdministratorService;
+import org.jhonny.service.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Path("/api/v1/administrators")
+@Path("/api/v1/persons")
 @RequestScoped
-public class AdministratorResource {
+public class PersonResource {
 
-    private final Logger LOGGER =  LoggerFactory.getLogger(AdministratorResource.class);
+    private final Logger LOGGER =  LoggerFactory.getLogger(PersonResource.class);
 
-    private final AdministratorService administratorService;
+    private final PersonService personService;
 
     @Inject
-    public AdministratorResource(AdministratorService administratorService) {
-        this.administratorService = administratorService;
+    public PersonResource(PersonService administratorService) {
+        this.personService = administratorService;
     }
 
     @POST
-    @Path("/persons")
     public Response addPerson(PersonRequest person) {
 
         try{
             LOGGER.info("Registering person {}",  person);
-            PersonResponse newPerson = administratorService.addPerson(person);
+            PersonResponse newPerson = personService.addPerson(person);
             return Response.status(Response.Status.CREATED)
                     .entity(newPerson)
                     .build();

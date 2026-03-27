@@ -1,16 +1,17 @@
 package org.jhonny.repository;
 
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.jhonny.models.Games;
+import org.jhonny.models.Game;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class GameRepository extends EntityRepository<Games> {
+public class GameRepository implements PanacheRepository<Game> {
     private static final Logger LOG = LoggerFactory.getLogger(GameRepository.class);
     private String query;
 
-    public Games getTheBestSellingGame(){
+    public Game getTheBestSellingGame(){
         query = """
                 SELECT td.gameId
                 FROM Sales s
@@ -23,7 +24,7 @@ public class GameRepository extends EntityRepository<Games> {
                 """;
 
         Number number = (Number) getEntityManager().createNativeQuery(query).getSingleResult();
-        Games theBestSellingGame = findById(number.longValue());
+        Game theBestSellingGame = findById(number.longValue());
         return theBestSellingGame;
     }
 }

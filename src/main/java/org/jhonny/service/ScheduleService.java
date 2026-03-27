@@ -4,7 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jhonny.exception.ScheduleNotFoundException;
-import org.jhonny.models.Schedules;
+import org.jhonny.models.Schedule;
 import org.jhonny.repository.ScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class ScheduleService{
     }
 
     @Transactional
-    public void addSchedule(Schedules schedule) {
+    public void addSchedule(Schedule schedule) {
 
         if(Objects.isNull(schedule)) {
             LOGGER.error("The schedule is null");
@@ -38,19 +38,19 @@ public class ScheduleService{
 
 
     }
-    public boolean checkSchedule(Set<Schedules> schedules, LocalTime hour) {
-        for(Schedules schedule : schedules) {
+    public boolean checkSchedule(List<Schedule> schedules, LocalTime hour) {
+        for(Schedule schedule : schedules) {
             if(isItInsideSchedule(hour, schedule)){
                 return true;
             }
         }
         return false;
     }
-    private boolean isItInsideSchedule(LocalTime hour, Schedules schedule) {
+    private boolean isItInsideSchedule(LocalTime hour, Schedule schedule) {
         return hour.isAfter(schedule.getOpenTime()) && hour.isBefore(schedule.getCloseTime());
     }
 
-    public List<Schedules> getAll(){
+    public List<Schedule> getAll(){
         return scheduleRepository.findAll().stream().toList();
     }
 }

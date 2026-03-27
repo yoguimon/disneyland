@@ -8,20 +8,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.jhonny.dto.PersonRequest;
-import org.jhonny.dto.PersonResponse;
-import org.jhonny.utils.TypePerson;
-@Data
+import org.jhonny.utils.PersonType;
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Persons {
+@Table(name = "Persons")
+public abstract class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,5 +34,5 @@ public abstract class Persons {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    private TypePerson type;
+    private PersonType type;
 }

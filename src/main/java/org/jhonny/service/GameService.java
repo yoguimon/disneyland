@@ -5,9 +5,10 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jhonny.dto.GameRequest;
 import org.jhonny.exception.GameNotFoundException;
-import org.jhonny.models.Employees;
-import org.jhonny.models.Games;
-import org.jhonny.models.Schedules;
+import org.jhonny.exception.GamePersistenceException;
+import org.jhonny.models.Employee;
+import org.jhonny.models.Game;
+import org.jhonny.models.Schedule;
 import org.jhonny.repository.EmployeeRepository;
 import org.jhonny.repository.GameRepository;
 import org.jhonny.repository.ScheduleRepository;
@@ -43,16 +44,17 @@ public class GameService{
                 throw new GameNotFoundException("Game not found");
             }
 
-            Games game = new Games();
+            Game game = new Game();
             game.setName(gameDto.name());
             game.setDescription(gameDto.description());
             game.setPrice(gameDto.price());
 
-            Employees newEmployee = employeeRepository.findById(gameDto.employeeId());
+            Employee newEmployee = employeeRepository.findById(gameDto.employeeId());
             game.setEmployee(newEmployee);
 
+            /// here we need to use cache instead of calling  each time to database
             gameDto.schedulesIds().forEach(id -> {
-                Schedules newSchedule = scheduleRepository.findById(id);
+                Schedule newSchedule = scheduleRepository.findById(id);
                game.getSchedules().add(newSchedule);
                newSchedule.getGames().add(game);
             });
@@ -64,7 +66,16 @@ public class GameService{
 
         }catch(Exception e){
             LOGGER.error("Error adding New Game",e);
-
+            throw new GamePersistenceException("Error adding new game: " + e.getMessage());
         }
+    }
+    public Game getGame(Long id){
+        Game requestGame = gameRepository.findById(id);
+
+        if(Objects.isNull(requestGame)) {
+            LOGGER.error("Game not found");
+            throw new GameNotFoundException("Game not found");
+        }
+        return requestGame;
     }
 }
