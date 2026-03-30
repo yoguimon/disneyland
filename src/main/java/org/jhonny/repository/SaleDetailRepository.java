@@ -2,9 +2,7 @@ package org.jhonny.repository;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.jhonny.models.TicketDetail;
 
 @ApplicationScoped
-public class TicketDetailRepository implements PanacheRepository<TicketDetail> {
-
+public class SaleDetailRepository implements PanacheRepository<SaleDetailRepository> {
 }

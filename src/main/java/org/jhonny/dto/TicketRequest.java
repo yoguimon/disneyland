@@ -2,4 +2,4 @@ package org.jhonny.dto;
 
 import java.util.List;
 
-public record TicketRequest(Long buyerId, Long ticketOfficeId, List<BuyRequest> buyRequests) { }
+public record TicketRequest(Long clientId, Long ticketOfficeId, int amount, double total, List<BuyRequest> buyRequests) { }

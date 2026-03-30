@@ -1,8 +1,14 @@
 package org.jhonny.models;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -10,25 +16,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-
-@Getter
+import org.jhonny.utils.EmployeeType;
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "Employees")
-public class Employee extends Person {
+public abstract class Employee {
 
-    @OneToMany(mappedBy = "employee")
-    private List<Game> games = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String ci;
+    private String firstName;
+    private String lastName;
+    private String email;
 
-    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+    @Enumerated(EnumType.STRING)
+    private EmployeeType type;
+
+    @OneToOne
+    @JoinColumn(name = "userId")
     private User user;
 }

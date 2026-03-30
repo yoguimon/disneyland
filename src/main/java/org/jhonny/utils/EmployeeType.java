@@ -1,6 +1,6 @@
 package org.jhonny.utils;
 
-public enum PersonType {
+public enum EmployeeType {
     EMPLOYEE,
     ADMIN,
     BUYER

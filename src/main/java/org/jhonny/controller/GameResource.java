@@ -27,10 +27,17 @@ public class GameResource {
 
     @POST
     public Response addGame(GameRequest game) {
-        LOGGER.info("Registering game {}", game);
-        gameService. addNewGame(game);
-        return Response.status(Response.Status.CREATED)
-                .entity(Map.of("message", "Game added successfully"))
-                .build();
+        try {
+            LOGGER.info("Registering game {}", game);
+            gameService. addNewGame(game);
+            return Response.status(Response.Status.CREATED)
+                    .entity(Map.of("message", "Game added successfully"))
+                    .build();
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(e.getMessage())
+                    .build();
+        }
     }
 }

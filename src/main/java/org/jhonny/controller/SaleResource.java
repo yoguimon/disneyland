@@ -45,16 +45,4 @@ public class SaleResource {
                     .build();
         }
     }
-//    @GET
-//    @Path("/range/date")
-//    public Response getNumberOfTicketsSoldForAllGameIntoASpecificRangeDate(@QueryParam("start") LocalDate start,
-//                                                                    @QueryParam("end") LocalDate end) {
-//
-//        try{
-//            Long numberSalesMonth = saleService.getNumberOfTicketsSoldForAllGameIntoASpecificRangeDate(start, end);
-//        }catch (Exception e){
-//            LOGGER.error(e.getMessage());
-//        }
-//        return null;
-//    }
 }

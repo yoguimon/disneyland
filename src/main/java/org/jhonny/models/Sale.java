@@ -10,13 +10,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,14 +30,19 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate dateOfSale;
-    private double totalSale;
-
+    @ManyToOne
+    @JoinColumn(name = "clientId")
+    private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "ticketOfficeId", nullable = false)
-    private TicketBooth ticketOffice;
+    @JoinColumn(name = "tickerOfficeId")
+    private TicketOffice ticketOffice;
 
-    @OneToMany(mappedBy = "sale")
-    private List<Ticket> tickets = new ArrayList<>();
+    @OneToMany
+    private List<SaleDetail> saleDetails;
+
+    private int amount;
+    private double total;
+    private LocalDate dateOfSale;
+
 }

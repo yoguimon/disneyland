@@ -30,13 +30,13 @@ public class SaleRepository implements PanacheRepository<Sale> {
     }
 
     public Long getNumberOfSalesInAllGamesBetweenDatesJPQL(LocalDate startDate, LocalDate endDate) {
-        query = """
-                SELECT COUNT(td)
-                FROM TicketDetail td
-                JOIN td.ticket t
-                JOIN t.sale s
-                WHERE td.dateOfGame BETWEEN :startDate AND :endDate
-            """;
+//        query = """
+//                SELECT COUNT(td)
+//                FROM TicketDetail td
+//                JOIN td.ticket t
+//                JOIN t.sale s
+//                WHERE td.dateOfGame BETWEEN :startDate AND :endDate
+//            """;
 
         return getEntityManager()
                 .createQuery(query, Long.class)
@@ -66,13 +66,13 @@ public class SaleRepository implements PanacheRepository<Sale> {
     }
 
     public Long getNumberOfSalesIntoASpecificGameAndRangeDateJPQL(Long gameId, LocalDate startDate, LocalDate endDate) {
-        query = """
-                SELECT COUNT(td)
-                FROM TicketDetail td
-                JOIN td.ticket t
-                JOIN t.sale s
-                WHERE td.game.id = :gameId AND td.dateOfGame BETWEEN :startDate AND :endDate
-                """;
+//        query = """
+//                SELECT COUNT(td)
+//                FROM TicketDetail td
+//                JOIN td.ticket t
+//                JOIN t.sale s
+//                WHERE td.game.id = :gameId AND td.dateOfGame BETWEEN :startDate AND :endDate
+//                """;
 
         return getEntityManager()
                 .createQuery(query, Long.class)
@@ -98,13 +98,13 @@ public class SaleRepository implements PanacheRepository<Sale> {
     }
 
     public BigDecimal getTotalSumOfSalesAmountInASingleDayJPQL(LocalDate date) {
-        query = """
-                 SELECT SUM(td.price)
-                FROM TicketDetail td
-                JOIN td.ticket t
-                JOIN t.sale s
-                WHERE td.dateOfGame = :dateOfGame
-                """;
+//        query = """
+//                 SELECT SUM(td.price)
+//                FROM TicketDetail td
+//                JOIN td.ticket t
+//                JOIN t.sale s
+//                WHERE td.dateOfGame = :dateOfGame
+//                """;
 
         return (BigDecimal) getEntityManager()
                 .createQuery(query)

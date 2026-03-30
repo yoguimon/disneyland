@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,16 +20,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "TicketBoths")
-public class TicketBooth {
+@Table(name = "TicketOffices")
+public class TicketOffice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
     @OneToMany(mappedBy = "ticketOffice")
-    private List<Sale> sales = new ArrayList<>();
-
+    private List<Sale> sales;
 }

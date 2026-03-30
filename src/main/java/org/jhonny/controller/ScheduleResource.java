@@ -5,6 +5,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
+import org.jhonny.dto.ScheduleRequest;
 import org.jhonny.exception.ScheduleNotFoundException;
 import org.jhonny.models.Schedule;
 import org.jhonny.service.ScheduleService;
@@ -27,14 +28,12 @@ public class ScheduleResource {
     }
 
     @POST
-    public Response addSchedule(Schedule schedule) {
-
+    public Response addSchedule(ScheduleRequest scheduleRequest) {
         try{
-
-            scheduleService.addSchedule(schedule);
+            scheduleService.addSchedule(scheduleRequest);
             return Response.status(Response.Status.CREATED)
                     .entity(Map.of("message", "Scheadule added succesfully",
-                                    "scheadule", schedule
+                                    "scheadule", scheduleRequest
                             ))
                     .build();
         }catch(ScheduleNotFoundException e){
