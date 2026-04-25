@@ -1,6 +1,6 @@
 package org.jhonny.dto;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
-public record GameRequest(String name, String description, BigDecimal price, Set<Long> schedulesIds) { }
+public record GameRequest(String name, String description, BigDecimal price, List<ScheduleRequest> scheduleRequests) { }

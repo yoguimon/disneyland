@@ -29,6 +29,7 @@ public class ScheduleResource {
 
     @POST
     public Response addSchedule(ScheduleRequest scheduleRequest) {
+        LOGGER.info("get into schedule request");
         try{
             scheduleService.addSchedule(scheduleRequest);
             return Response.status(Response.Status.CREATED)

@@ -3,6 +3,7 @@ package org.jhonny.repository;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.jhonny.dto.EmployeeRequest;
 import org.jhonny.dto.EmployeeResponse;
 import org.jhonny.exception.EmployeePersistenceException;
@@ -15,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
 @ApplicationScoped
 public class EmployeeGameRepository implements PanacheRepository<EmployeeGame>, EmployeeRepository {
 
@@ -31,6 +31,7 @@ public class EmployeeGameRepository implements PanacheRepository<EmployeeGame>, 
     }
 
     @Override
+    @Transactional
     public EmployeeResponse addEmployee(EmployeeRequest employeeRequest) {
         try{
 
@@ -48,7 +49,7 @@ public class EmployeeGameRepository implements PanacheRepository<EmployeeGame>, 
                 LOGGER.error("Game with id {} not found", employeeRequest.gameId());
                 throw new GamePersistenceException("Game not found");
             }
-
+            ///according debug i did, this part is getting error
             EmployeeGame employeeGame = EmployeeGame.builder()
                     .ci(employeeRequest.ci())
                     .firstName(employeeRequest.firstName())
@@ -70,7 +71,8 @@ public class EmployeeGameRepository implements PanacheRepository<EmployeeGame>, 
 
         }catch(Exception e){
 
-            LOGGER.error("Employee not added successfully");
+            LOGGER.error("Employee not added successfully", e);
+            /// the error should also throw a exception e
             throw new EmployeePersistenceException("Employee not added successfully");
         }
     }
@@ -82,6 +84,6 @@ public class EmployeeGameRepository implements PanacheRepository<EmployeeGame>, 
 
     @Override
     public EmployeeType getType() {
-        return EmployeeType.EMPLOYEE;
+        return EmployeeType.GAME;
     }
 }

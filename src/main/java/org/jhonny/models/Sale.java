@@ -1,6 +1,7 @@
 package org.jhonny.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,15 +31,15 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clientId")
     private Client client;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tickerOfficeId")
     private TicketOffice ticketOffice;
 
-    @OneToMany
+    @OneToMany(mappedBy = "sale")
     private List<SaleDetail> saleDetails;
 
     private int amount;

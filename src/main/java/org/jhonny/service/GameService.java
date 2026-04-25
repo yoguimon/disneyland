@@ -6,7 +6,6 @@ import jakarta.transaction.Transactional;
 import org.jhonny.dto.GameRequest;
 import org.jhonny.exception.GameDtoNotFoundException;
 import org.jhonny.exception.GameNotFoundException;
-import org.jhonny.exception.GamePersistenceException;
 import org.jhonny.models.Game;
 import org.jhonny.models.Schedule;
 import org.jhonny.repository.GameRepository;
@@ -14,6 +13,8 @@ import org.jhonny.repository.ScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -44,14 +45,19 @@ public class GameService{
         game.setName(gameDto.name());
         game.setDescription(gameDto.description());
         game.setPrice(gameDto.price());
-
-        /// here we need to use cache instead of calling  each time to database
-        gameDto.schedulesIds().forEach(id -> {
-            Schedule newSchedule = scheduleRepository.findById(id);
-            game.getSchedules().add(newSchedule);
-        });
-
         gameRepository.persist(game);
+        List<Schedule> scheduleList = new ArrayList<>();
+
+        gameDto.scheduleRequests().forEach(scheduleRequest -> {
+            Schedule newSchedule = Schedule.builder()
+                    .dayOfWeek(scheduleRequest.dayOfWeek())
+                    .openTime(scheduleRequest.openTime())
+                    .closeTime(scheduleRequest.closeTime())
+            .build();
+            scheduleList.add(newSchedule);
+        });
+        scheduleRepository.persist(scheduleList);
+
 
         LOGGER.info("New Game added{}",  game);
     }

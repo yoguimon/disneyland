@@ -4,17 +4,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jhonny.dto.ScheduleRequest;
-import org.jhonny.exception.GameNotFoundException;
 import org.jhonny.exception.ScheduleNotFoundException;
-import org.jhonny.models.Game;
 import org.jhonny.models.Schedule;
 import org.jhonny.repository.GameRepository;
 import org.jhonny.repository.ScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,15 +34,10 @@ public class ScheduleService{
             throw new ScheduleNotFoundException("The schedule is null");
 
         }
-        Game game = gameRepository.findById(scheduleRequest.gameId());
-        if (game == null) {
-            LOGGER.error("Game with id {} not found", scheduleRequest.gameId());
-            throw new GameNotFoundException("Game not found");
-        }
         Schedule schedule = Schedule.builder()
                 .openTime(scheduleRequest.openTime())
                 .closeTime(scheduleRequest.closeTime())
-                .game(game)
+                .dayOfWeek(scheduleRequest.dayOfWeek())
                 .build();
 
         scheduleRepository.persist(schedule);
