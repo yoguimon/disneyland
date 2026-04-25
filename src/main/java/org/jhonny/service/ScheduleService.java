@@ -6,7 +6,6 @@ import jakarta.transaction.Transactional;
 import org.jhonny.dto.ScheduleRequest;
 import org.jhonny.exception.ScheduleNotFoundException;
 import org.jhonny.models.Schedule;
-import org.jhonny.repository.GameRepository;
 import org.jhonny.repository.ScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +18,10 @@ public class ScheduleService{
 
     private final Logger LOGGER = LoggerFactory.getLogger(ScheduleService.class);
     private final ScheduleRepository scheduleRepository;
-    private final GameRepository gameRepository;
 
     @Inject
-    public ScheduleService(ScheduleRepository scheduleRepository, GameRepository gameRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository) {
         this.scheduleRepository = scheduleRepository;
-        this.gameRepository = gameRepository;
     }
 
     @Transactional
