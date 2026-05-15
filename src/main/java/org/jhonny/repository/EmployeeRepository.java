@@ -1,10 +1,10 @@
 package org.jhonny.repository;
 
-import org.jhonny.dto.EmployeeRequest;
-import org.jhonny.dto.EmployeeResponse;
-import org.jhonny.utils.EmployeeType;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.jhonny.models.Employee;
 
-public interface EmployeeRepository {
-    EmployeeResponse addEmployee(EmployeeRequest person);
-    EmployeeType getType();
+@ApplicationScoped
+public class EmployeeRepository implements PanacheRepositoryBase<Employee, Long> {
+
 }
