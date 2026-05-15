@@ -4,16 +4,19 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jhonny.dto.GameRequest;
+import org.jhonny.exception.EmployeeNotFoundException;
 import org.jhonny.exception.GameDtoNotFoundException;
 import org.jhonny.exception.GameNotFoundException;
+import org.jhonny.exception.ScheduleNotFoundException;
+import org.jhonny.models.Employee;
 import org.jhonny.models.Game;
 import org.jhonny.models.Schedule;
+import org.jhonny.repository.EmployeeRepository;
 import org.jhonny.repository.GameRepository;
 import org.jhonny.repository.ScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,14 +27,16 @@ public class GameService{
 
     private final GameRepository gameRepository;
     private final ScheduleRepository scheduleRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Inject
     public GameService(GameRepository gameRepository,
-                       ScheduleRepository scheduleRepository) {
+                       ScheduleRepository scheduleRepository,
+                       EmployeeRepository employeeRepository) {
 
         this.gameRepository = gameRepository;
         this.scheduleRepository = scheduleRepository;
-
+        this.employeeRepository = employeeRepository;
     }
 
     @Transactional
@@ -45,19 +50,21 @@ public class GameService{
         game.setName(gameDto.name());
         game.setDescription(gameDto.description());
         game.setPrice(gameDto.price());
+
+        if (gameDto.schedulesIds()==null || gameDto.schedulesIds().isEmpty()) {
+            LOGGER.error("SchedulesIds is null o empty");
+            throw new ScheduleNotFoundException("SchedulesIds is null or empty");
+        }
+        List<Schedule> schedules = scheduleRepository.list("id IN ?1", gameDto.schedulesIds());
+        game.setSchedules(schedules);
+
+        if (gameDto.employeesIds() == null || gameDto.employeesIds().isEmpty()) {
+            LOGGER.error("EmployeesIds is null o empty");
+            throw new EmployeeNotFoundException("EmployeesIds is null or empty");
+        }
+        List<Employee> employees = employeeRepository.list("id IN ?1", gameDto.employeesIds());
+        game.setEmployees(employees);
         gameRepository.persist(game);
-        List<Schedule> scheduleList = new ArrayList<>();
-
-        gameDto.scheduleRequests().forEach(scheduleRequest -> {
-            Schedule newSchedule = Schedule.builder()
-                    .dayOfWeek(scheduleRequest.dayOfWeek())
-                    .openTime(scheduleRequest.openTime())
-                    .closeTime(scheduleRequest.closeTime())
-            .build();
-            scheduleList.add(newSchedule);
-        });
-        scheduleRepository.persist(scheduleList);
-
 
         LOGGER.info("New Game added{}",  game);
     }

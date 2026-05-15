@@ -13,16 +13,16 @@ import java.util.Map;
 @ApplicationScoped
 public class EmployeeFactory {
 
-    private final Map<EmployeeType, EmployeeRepository> allInstancesMapOfPersonRepository = new HashMap<>();
-
-    @Inject
-    public EmployeeFactory(Instance<EmployeeRepository> personRepositoryInstances) {
-        for (EmployeeRepository instance : personRepositoryInstances) {
-            allInstancesMapOfPersonRepository.put(instance.getType(), instance);
-        }
-    }
-
-    public EmployeeRepository getEmployee(EmployeeType type){
-        return allInstancesMapOfPersonRepository.get(type);
-    }
+//    private final Map<EmployeeType, EmployeeRepository> allInstancesMapOfPersonRepository = new HashMap<>();
+//
+//    @Inject
+//    public EmployeeFactory(Instance<EmployeeRepository> personRepositoryInstances) {
+//        for (EmployeeRepository instance : personRepositoryInstances) {
+//            allInstancesMapOfPersonRepository.put(instance.getType(), instance);
+//        }
+//    }
+//
+//    public EmployeeRepository getEmployee(EmployeeType type){
+//        return allInstancesMapOfPersonRepository.get(type);
+//    }
 }

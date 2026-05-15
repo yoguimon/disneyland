@@ -26,8 +26,8 @@ public class ClientService {
         Client client = clientRepository.findById(id);
 
         if(Objects.isNull(client)) {
-            LOGGER.error("buyer not found");
-            throw new BuyerNotFoundException("buyer not found");
+            LOGGER.error("Client not found");
+            throw new BuyerNotFoundException("Client not found");
 
         }
         return client;

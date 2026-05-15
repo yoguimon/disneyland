@@ -1,6 +1,5 @@
 package org.jhonny.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,10 +37,6 @@ public class Game {
 
     private BigDecimal price;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "game")
-    private List<EmployeeGame> employeeGames;//empleados a cargo
-
     @OneToMany(mappedBy = "game")
     private List<SaleDetail> saleDetails;
 
@@ -52,4 +47,12 @@ public class Game {
             inverseJoinColumns = @JoinColumn(name = "scheduleId")
     )
     private List<Schedule> schedules;
+
+    @ManyToMany
+    @JoinTable(
+            name = "GamesManagers",
+            joinColumns = @JoinColumn(name = "gameId"),
+            inverseJoinColumns = @JoinColumn(name = "employeeId")
+    )
+    private List<Employee> employees;
 }

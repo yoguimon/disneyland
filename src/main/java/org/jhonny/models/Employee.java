@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -18,6 +20,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.jhonny.utils.EmployeeType;
+
+import java.util.List;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -26,7 +31,7 @@ import org.jhonny.utils.EmployeeType;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "Employees")
-public abstract class Employee {
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,4 +48,7 @@ public abstract class Employee {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
+
+    @ManyToMany(mappedBy = "employees")
+    private List<Game> games;
 }

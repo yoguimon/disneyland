@@ -29,7 +29,7 @@ public class GameResource {
     public Response addGame(GameRequest game) {
         try {
             LOGGER.info("Registering game {}", game);
-            gameService. addNewGame(game);
+            gameService.addNewGame(game);
             return Response.status(Response.Status.CREATED)
                     .entity(Map.of("message", "Game added successfully"))
                     .build();
