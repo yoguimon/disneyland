@@ -2,18 +2,14 @@ package org.jhonny.controller;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
-import org.jhonny.dto.TicketRequest;
+import org.jhonny.dto.SaleRequest;
 import org.jhonny.dto.TicketResponse;
 import org.jhonny.service.SaleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.LocalDate;
 
 @Path("/api/v1/sales")
 @RequestScoped
@@ -29,11 +25,11 @@ public class SaleResource {
     }
 
     @POST
-    public Response sellTicket(TicketRequest requestTicket) {
+    public Response sellTicket(SaleRequest saleRequest) {
 
         try{
             LOGGER.info("Registering person");
-            TicketResponse TicketResponse = saleService.sellTicket(requestTicket);
+            TicketResponse TicketResponse = saleService.addSale(saleRequest);
             return Response.status(Response.Status.CREATED)
                     .entity(TicketResponse)
                     .build();

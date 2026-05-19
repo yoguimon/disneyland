@@ -14,6 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -33,4 +36,13 @@ public class SaleDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gameId")
     private Game game;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "scheduleId")
+    private Schedule schedule;
+
+    private BigDecimal price;
+    private LocalDate dateOfGame;
+    private LocalDate createAt;
+
 }

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -32,6 +33,10 @@ public class Sale {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employeeId")
+    private Employee employee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clientId")
     private Client client;
 
@@ -44,6 +49,6 @@ public class Sale {
 
     private int amount;
     private double total;
-    private LocalDate dateOfSale;
+    private LocalDate createAt;
 
 }

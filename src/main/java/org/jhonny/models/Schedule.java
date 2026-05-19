@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,9 @@ public class Schedule {
     private LocalTime openTime;
     private LocalTime closeTime;
     private DayOfWeek dayOfWeek;
+
+    @OneToMany(mappedBy = "schedule")
+    private List<SaleDetail> saleDetails;
 
     @ManyToMany(mappedBy = "schedules")
     private List<Game> games;
